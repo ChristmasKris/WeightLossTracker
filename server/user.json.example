@@ -1,6 +1,6 @@
 {
 	"gender": "female",
-	"ageYears": 20,
+	"birthDate": "2000-12-25",
 	"heightCm": 175,
 	"activity": 1.55
 }

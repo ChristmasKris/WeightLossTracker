@@ -21,6 +21,19 @@ const readUser = () => {
 	}
 };
 
+const calculateAge = (birthDateStr) => {
+	const birthDate = new Date(birthDateStr);
+	const today = new Date();
+	let age = today.getFullYear() - birthDate.getFullYear();
+	const monthDiff = today.getMonth() - birthDate.getMonth();
+	
+	if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+		age--;
+	}
+	
+	return age;
+};
+
 const getLatestWeight = () => {
 	const weights = getAllWeights();
 	const recentWeights = weights.slice(0, 7);
@@ -49,9 +62,11 @@ export const calculateAndSaveMaxCalories = () => {
 		return;
 	}
 	
+	const ageYears = calculateAge(user.birthDate);
+	
 	const maxCalories = calcMaxCalories({
 		sex: user.gender,
-		ageYears: user.ageYears,
+		ageYears,
 		heightCm: user.heightCm,
 		weightKg: latestWeight,
 		activity: user.activity
