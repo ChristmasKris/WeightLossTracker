@@ -1,0 +1,20 @@
+<div class="screen active" id="trackerScreen">
+	<nav class="screen-nav">
+		<button id="navTracker" class="active">Calories</button>
+		<button id="navWeight">Weight</button>
+	</nav>
+	
+	<div class="container">
+		<h1>Calories</h1>
+		<input type="text" id="foodName" placeholder="Consumable name" required/>
+		<input type="number" id="calorieAmount" placeholder="Calories" step="1" min="0" required/>
+		<button id="addEntryBtn">Add entry</button>
+  	</div>
+	<div class="entries">
+		<h1>Today's entries</h1>
+		<span class="todayCalories">0 / 0 kcal</span>
+		<div class="entriesHolder">
+			<span class="noEntries">No entries</span>
+		</div>
+	</div>
+</div>
