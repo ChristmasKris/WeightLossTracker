@@ -28,7 +28,7 @@ export const getEntries = () => {
 
 export const addEntry = (name, calories) => {
 	const db = readDB();
-	const entriesArray = db.calories || [];
+	const entriesArray = db.entries || [];
 	
 	const maxId = entriesArray.length > 0 
 		? Math.max(...entriesArray.map(e => e.id || 0))
@@ -42,7 +42,7 @@ export const addEntry = (name, calories) => {
 	};
 	
 	entriesArray.push(newEntry);
-	db.calories = entriesArray;
+	db.entries = entriesArray;
 	writeDB(db);
 	return newEntry;
 };
@@ -59,14 +59,14 @@ export const getTodayEntries = () => {
 
 export const deleteEntry = (entryId) => {
 	const db = readDB();
-	const entriesArray = db.calories || [];
+	const entriesArray = db.entries || [];
 	const filteredEntries = entriesArray.filter(entry => entry.id !== entryId);
 	
 	if (filteredEntries.length === entriesArray.length) {
 		return false;
 	}
 	
-	db.calories = filteredEntries;
+	db.entries = filteredEntries;
 	writeDB(db);
 	return true;
 };

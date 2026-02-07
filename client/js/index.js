@@ -3,7 +3,7 @@
 import { renderLoginScreen } from './login.js';
 import { renderCaloriesScreen } from './calories.js';
 import { renderWeightScreen } from './weight.js';
-import { getState, subscribe, actions } from './state.js';
+import { stateManager } from './stateManager.js';
 
 const appDiv = document.getElementById('app');
 
@@ -18,17 +18,17 @@ const render = async (state) => {
 };
 
 const init = async () => {
-	actions.init();
-	await actions.fetchTodayEntries();
-	await actions.fetchTodayWeight();
-	await actions.fetchAllWeights();
-	await actions.fetchMaxCalories();
+	stateManager.action.init();
+	await stateManager.action.fetchTodayEntries();
+	await stateManager.action.fetchTodayWeight();
+	await stateManager.action.fetchAllWeights();
+	await stateManager.action.fetchMaxCalories();
 	
-	subscribe((state) => {
+	stateManager.subscribe((state) => {
 		render(state);
 	});
 	
-	const state = getState();
+	const state = stateManager.get();
 	await render(state);
 };
 

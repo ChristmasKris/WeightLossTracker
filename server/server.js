@@ -4,7 +4,7 @@ import http from 'http';
 import url from 'url';
 import dotenv from 'dotenv';
 
-import { authenticatePassword } from './auth.js';
+import { authenticateKey } from './auth.js';
 import { addEntry, getTodayEntries, deleteEntry, getTodayWeight, addWeight, getAllWeights, deleteWeight, getCurrentMaxCalories } from './database.js';
 import { initScheduler } from './scheduler.js';
 
@@ -34,8 +34,8 @@ const server = http.createServer((req, res) => {
 		
 		req.on('end', () => {
 			try {
-				const { password } = JSON.parse(body);
-				const isValid = authenticatePassword(password);
+				const { key } = JSON.parse(body);
+				const isValid = authenticateKey(key);
 				res.writeHead(200, { 'Content-Type': 'application/json' });
 				res.end(JSON.stringify({ success: isValid }));
 			} catch (error) {
@@ -56,9 +56,9 @@ const server = http.createServer((req, res) => {
 		
 		req.on('end', () => {
 			try {
-				const { name, calories, password } = JSON.parse(body);
+				const { name, calories, key } = JSON.parse(body);
 				
-				if (!authenticatePassword(password)) {
+				if (!authenticateKey(key)) {
 					res.writeHead(401, { 'Content-Type': 'application/json' });
 					res.end(JSON.stringify({ success: false, message: 'Unauthorized' }));
 					return;
@@ -111,9 +111,9 @@ const server = http.createServer((req, res) => {
 		
 		req.on('end', () => {
 			try {
-				const { entryId, password } = JSON.parse(body);
+				const { entryId, key } = JSON.parse(body);
 				
-				if (!authenticatePassword(password)) {
+				if (!authenticateKey(key)) {
 					res.writeHead(401, { 'Content-Type': 'application/json' });
 					res.end(JSON.stringify({ success: false, message: 'Unauthorized' }));
 					return;
@@ -176,9 +176,9 @@ const server = http.createServer((req, res) => {
 		
 		req.on('end', () => {
 			try {
-				const { weight, password } = JSON.parse(body);
+				const { weight, key } = JSON.parse(body);
 				
-				if (!authenticatePassword(password)) {
+				if (!authenticateKey(key)) {
 					res.writeHead(401, { 'Content-Type': 'application/json' });
 					res.end(JSON.stringify({ success: false, message: 'Unauthorized' }));
 					return;
@@ -221,9 +221,9 @@ const server = http.createServer((req, res) => {
 		
 		req.on('end', () => {
 			try {
-				const { weightId, password } = JSON.parse(body);
+				const { weightId, key } = JSON.parse(body);
 				
-				if (!authenticatePassword(password)) {
+				if (!authenticateKey(key)) {
 					res.writeHead(401, { 'Content-Type': 'application/json' });
 					res.end(JSON.stringify({ success: false, message: 'Unauthorized' }));
 					return;

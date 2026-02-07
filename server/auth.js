@@ -3,8 +3,8 @@
 import dotenv from 'dotenv';
 
 dotenv.config();
-const PASSWORD = process.env.PASSWORD;
+const KEY = process.env.KEY;
 
-export const authenticatePassword = (pwd) => {
-	return pwd === PASSWORD;
+export const authenticateKey = (key) => {
+	return key === KEY;
 };

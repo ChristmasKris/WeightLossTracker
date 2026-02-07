@@ -1,29 +1,36 @@
 'use strict';
 
-import { getState, setState, actions } from './state.js';
-import { api } from './api.js';
 import { listener, strToEl, parse } from './utils.js';
+import { stateManager } from './stateManager.js';
 
-let unsubscribe;
+let ui = {};
 
-export const renderWeightScreen = async (appDiv) => {
+export async function renderWeightScreen(appDiv) {
 	const response = await fetch('weight.html');
 	const html = await response.text();
 	appDiv.innerHTML = html;
-	setupWeightEvents(appDiv);
+	
+	ui = {
+		addWeightBtn: document.getElementById('addWeightBtn'),
+		weightInput: document.getElementById('weightInput'),
+		weightsHolder: document.querySelector('.weightsHolder'),
+		navTracker: document.getElementById('navTracker'),
+		navWeight: document.getElementById('navWeight')
+	};
+	
 	renderWeights();
-};
+	
+	listener.add(ui.addWeightBtn, 'click', addNewWeight);
+	listener.add(ui.weightInput, 'keypress', inputKeyPress);
+	listener.add(ui.navTracker, 'click', changePage);
+}
 
-const renderWeights = () => {
-	const state = getState();
-	const container = document.querySelector('.weightsHolder');
+function renderWeights() {
+	const state = stateManager.get();
+	ui.weightsHolder.innerHTML = '';
 	
-	if (!container) return;
-	
-	container.innerHTML = '';
-	
-	if (!state.weights || state.weights.length === 0) {
-		container.appendChild(strToEl(`
+	if (!state.weights || (state.weights.length === 0)) {
+		ui.weightsHolder.appendChild(strToEl(`
 			<div class="noWeights">
 				<span>No entries</span>
 			</div>
@@ -31,7 +38,11 @@ const renderWeights = () => {
 		return;
 	}
 	
-	for (let weight of state.weights) {
+	const sortedWeights = [...state.weights].sort((a, b) =>
+		new Date(b.timestamp) - new Date(a.timestamp)
+	);
+	
+	for (let weight of sortedWeights) {
 		const date = new Date(weight.timestamp);
 		const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 		
@@ -59,68 +70,47 @@ const renderWeights = () => {
 				return;
 			}
 			
-			const state = getState();
-			const success = await api.deleteWeight(weightId, state.auth.password);
-			
-			if (success) {
-				await actions.fetchAllWeights();
-				await actions.fetchTodayWeight();
+			if (await stateManager.action.deleteWeight(weightId)) {
 				renderWeights();
 			} else {
 				alert('Failed to delete weight entry');
 			}
 		});
 		
-		container.appendChild(el);
+		ui.weightsHolder.appendChild(el);
 	}
-};
+}
 
-const setupWeightEvents = (appDiv) => {
-	const addWeightBtn = appDiv.querySelector('#addWeightBtn');
-	const weightInput = appDiv.querySelector('#weightInput');
-	const navTracker = appDiv.querySelector('#navTracker');
-	const navWeight = appDiv.querySelector('#navWeight');
+async function addNewWeight() {
+	const state = stateManager.get();
 	
-	if (addWeightBtn) {
-		listener.add(addWeightBtn, 'click', async () => {
-			const state = getState();
-			
-			if (state.todayWeight) {
-				alert('You already entered your weight today. Delete the existing weight first to be able to add a new one.');
-				return;
-			}
-			
-			let weight = parseFloat(weightInput.value);
-			const password = state.auth.password;
-			
-			if (!weight || weight <= 0 || isNaN(weight)) {
-				alert('Please enter a valid weight');
-				return;
-			}
-			
-			weight = Math.round(weight * 100) / 100;
-			const success = await api.addWeight(weight, password);
-			
-			if (success) {
-				await actions.fetchTodayWeight();
-				await actions.fetchAllWeights();
-				renderWeights();
-				weightInput.value = '';
-			} else {
-				alert('Failed to save weight');
-			}
-		});
-		
-		weightInput.addEventListener('keypress', (e) => {
-			if (e.key === 'Enter') {
-				addWeightBtn.click();
-			}
-		});
+	if (state.todayWeight) {
+		alert('You already entered your weight today. Delete the existing weight first to be able to add a new one.');
+		return;
 	}
 	
-	if (navTracker) {
-		navTracker.addEventListener('click', () => {
-			setState({ ui: { currentScreen: 'tracker' } });
-		});
+	const weight = parse.float(ui.weightInput.value);
+	
+	if ((weight === null) || (weight <= 0)) {
+		alert('Please enter a valid weight');
+		return;
 	}
-};
+	
+	const roundedWeight = Math.round(weight * 100) / 100;
+	
+	if (await stateManager.action.addWeight(roundedWeight)) {
+		ui.weightInput.value = '';
+	} else {
+		alert('Failed to save weight');
+	}
+}
+
+function inputKeyPress(e) {
+	if ((e.key === 'Enter') && ui.weightInput.value.trim()) {
+		addNewWeight();
+	}
+}
+
+function changePage() {
+	stateManager.action.changeScreen('tracker');
+}

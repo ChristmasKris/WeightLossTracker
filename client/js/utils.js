@@ -385,7 +385,6 @@ export const randomHelper = {
 * @param {string} input HTML string to convert.
 * @returns {HTMLElement | DocumentFragment | null}
 */
-
 export function strToEl(input) {
 	if (typeof input !== 'string') {
 		logError('strToEl(): Input is not a string.', { input });

@@ -1,23 +1,39 @@
 'use strict';
 
 import { listener, strToEl, parse } from './utils.js';
-import { api } from './api.js';
-import { getState, setState } from './state.js';
+import { stateManager } from './stateManager.js';
 
-export const renderCaloriesScreen = async (appDiv) => {
+let ui = {};
+
+export async function renderCaloriesScreen(appDiv) {
 	const response = await fetch('calories.html');
 	const html = await response.text();
 	appDiv.innerHTML = html;
-	setupCaloriesEvents();
+	
+	ui = {
+		addEntryBtn: document.getElementById('addEntryBtn'),
+		foodNameInput: document.getElementById('foodName'),
+		calorieAmountInput: document.getElementById('calorieAmount'),
+		entriesHolder: document.querySelector('.entriesHolder'),
+		totalCaloriesDisplay: document.querySelector('.todayCalories'),
+		navWeight: document.getElementById('navWeight')
+	};
+	
+	renderEntries();
+	
+	listener.add(addEntryBtn, 'click', addNewEntry);
+	listener.add(foodNameInput, 'keypress', inputKeyPress);
+	listener.add(calorieAmountInput, 'keypress', inputKeyPress);
+	listener.add(navWeight, 'click', changePage);
 };
 
-const renderEntries = (entries, container, totalCaloriesDisplay) => {
-	const state = getState();
-	container.innerHTML = '';
-	totalCaloriesDisplay.textContent = `${state.todayCalories} / ${state.maxCalories} kcal`;
+function renderEntries() {
+	const state = stateManager.get();
+	ui.entriesHolder.innerHTML = '';
+	ui.totalCaloriesDisplay.textContent = `${state.todayCalories} / ${state.maxCalories} kcal`;
 	
-	if (!entries || entries.length === 0) {
-		container.appendChild(strToEl(`
+	if (!state.entries || (state.entries.length === 0)) {
+		ui.entriesHolder.appendChild(strToEl(`
 			<div class="noEntries">
 				<span>No entries</span>
 			</div>
@@ -26,8 +42,7 @@ const renderEntries = (entries, container, totalCaloriesDisplay) => {
 		return;
 	}
 	
-	// Sort entries by timestamp in descending order (most recent first)
-	const sortedEntries = [...entries].sort((a, b) => 
+	const sortedEntries = [...state.entries].sort((a, b) => 
 		new Date(b.timestamp) - new Date(a.timestamp)
 	);
 	
@@ -54,81 +69,45 @@ const renderEntries = (entries, container, totalCaloriesDisplay) => {
 				return;
 			}
 			
-			const state = getState();
-			const success = await api.deleteEntry(entryId, state.auth.password);
-			
-			if (success) {
-				const entries = await api.getTodayEntries();
-				renderEntries(entries, container, totalCaloriesDisplay);
+			if (await stateManager.action.deleteCalorieEntry(entryId)) {
+				renderEntries();
 			} else {
 				alert('Failed to delete entry');
 			}
 		});
 		
-		container.appendChild(el);
+		ui.entriesHolder.appendChild(el);
 	}
 };
 
-const setupCaloriesEvents = () => {
-	const addEntryBtn = document.getElementById('addEntryBtn');
-	const foodNameInput = document.getElementById('foodName');
-	const calorieAmountInput = document.getElementById('calorieAmount');
-	const entriesHolder = document.querySelector('.entriesHolder');
-	const totalCaloriesDisplay = document.querySelector('.todayCalories');
-	const navTracker = document.getElementById('navTracker');
-	const navWeight = document.getElementById('navWeight');
-	const state = getState();
-	renderEntries(state.entries, entriesHolder, totalCaloriesDisplay);
+async function addNewEntry() {
+	const name = parse.string(ui.foodNameInput.value);
+	const calories = parse.int(ui.calorieAmountInput.value);
 	
-	const handleEntry = async () => {
-		const name = foodNameInput.value.trim();
-		const calories = parseInt(calorieAmountInput.value);
-		const state = getState();
-		const password = state.auth.password;
-		
-		if (!name || !calories) {
-			alert('Please fill in all fields');
-			return;
-		}
-		
-		if (calories === 0 || isNaN(calories)) {
-			alert('Calories must be a valid number');
-			return;
-		}
-		
-		const success = await api.addEntry(name, calories, password);
-		
-		if (success) {
-			foodNameInput.value = '';
-			calorieAmountInput.value = '';
-			const entries = await api.getTodayEntries();
-			const todayCalories = entries.reduce((sum, item) => {
-				return sum + (Number(item.calories) || 0);
-			}, 0);
-			
-			setState({
-				entries,
-				todayCalories
-			});
-			renderEntries(entries, entriesHolder, totalCaloriesDisplay);
-		} else {
-			alert('Failed to save entry');
-		}
-	};
-	
-	const handleKeyPress = (e) => {
-		if (e.key === 'Enter' && foodNameInput.value.trim() && calorieAmountInput.value) {
-			handleEntry();
-		}
-	};
-	
-	listener.add(addEntryBtn, 'click', handleEntry);
-	listener.add(foodNameInput, 'keypress', handleKeyPress);
-	listener.add(calorieAmountInput, 'keypress', handleKeyPress);
-	
-	if (navWeight) {
-		navWeight.addEventListener('click', () => {
-			setState({ ui: { currentScreen: 'weight' } });
-		});
+	if ((name === null) || (calories === null)) {
+		alert('Please fill in all fields');
+		return;
 	}
-};
+	
+	if (calories < 0) {
+		alert('Calories must be 0 or above');
+		return;
+	}
+	
+	if (await stateManager.action.addCalorieEntry(name, calories)) {
+		ui.foodNameInput.value = '';
+		ui.calorieAmountInput.value = '';
+	} else {
+		alert('Failed to save entry');
+	}
+}
+
+function inputKeyPress(e) {
+	if ((e.key === 'Enter') && foodNameInput.value.trim() && calorieAmountInput.value) {
+		handleEntry();
+	}
+}
+
+function changePage() {
+	stateManager.action.changeScreen('weight');
+}

@@ -1,14 +1,16 @@
 'use strict';
 
-const API_URL = 'http://192.168.0.100:3000/api';
+import { config } from './config.js';
 
 export const api = {
-	authenticate: async (password) => {
+	async authenticate(key) {
 		try {
-			const response = await fetch(`${API_URL}/auth`, {
+			const response = await fetch(`${config.API_URL}/auth`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ password })
+				body: JSON.stringify({
+					key
+				})
 			});
 			
 			const data = await response.json();
@@ -19,12 +21,16 @@ export const api = {
 		}
 	},
 	
-	addEntry: async (name, calories, password) => {
+	async addCalorieEntry(name, calories, key) {
 		try {
-			const response = await fetch(`${API_URL}/entry`, {
+			const response = await fetch(`${config.API_URL}/entry`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, calories, password })
+				body: JSON.stringify({
+					name,
+					calories,
+					key
+				})
 			});
 			
 			const data = await response.json();
@@ -35,9 +41,9 @@ export const api = {
 		}
 	},
 	
-	getTodayEntries: async () => {
+	async getTodayEntries() {
 		try {
-			const response = await fetch(`${API_URL}/getTodayEntries`, {
+			const response = await fetch(`${config.API_URL}/getTodayEntries`, {
 				method: 'GET'
 			});
 			
@@ -49,12 +55,15 @@ export const api = {
 		}
 	},
 	
-	deleteEntry: async (entryId, password) => {
+	async deleteEntry(entryId, key) {
 		try {
-			const response = await fetch(`${API_URL}/deleteEntry`, {
+			const response = await fetch(`${config.API_URL}/deleteEntry`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ entryId, password })
+				body: JSON.stringify({
+					entryId,
+					key
+				})
 			});
 			
 			const data = await response.json();
@@ -65,9 +74,9 @@ export const api = {
 		}
 	},
 	
-	getTodayWeight: async () => {
+	async getTodayWeight() {
 		try {
-			const response = await fetch(`${API_URL}/getTodayWeight`, {
+			const response = await fetch(`${config.API_URL}/getTodayWeight`, {
 				method: 'GET'
 			});
 			
@@ -79,12 +88,15 @@ export const api = {
 		}
 	},
 	
-	addWeight: async (weight, password) => {
+	async addWeight(weight, key) {
 		try {
-			const response = await fetch(`${API_URL}/weight`, {
+			const response = await fetch(`${config.API_URL}/weight`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ weight, password })
+				body: JSON.stringify({
+					weight,
+					key
+				})
 			});
 			
 			const data = await response.json();
@@ -95,9 +107,9 @@ export const api = {
 		}
 	},
 	
-	getAllWeights: async () => {
+	async getAllWeights() {
 		try {
-			const response = await fetch(`${API_URL}/getAllWeights`, {
+			const response = await fetch(`${config.API_URL}/getAllWeights`, {
 				method: 'GET'
 			});
 			
@@ -109,12 +121,15 @@ export const api = {
 		}
 	},
 	
-	deleteWeight: async (weightId, password) => {
+	async deleteWeight(weightId, key) {
 		try {
-			const response = await fetch(`${API_URL}/deleteWeight`, {
+			const response = await fetch(`${config.API_URL}/deleteWeight`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ weightId, password })
+				body: JSON.stringify({
+					weightId,
+					key
+				})
 			});
 			
 			const data = await response.json();
@@ -125,9 +140,9 @@ export const api = {
 		}
 	},
 	
-	getCurrentMaxCalories: async () => {
+	async getCurrentMaxCalories() {
 		try {
-			const response = await fetch(`${API_URL}/getCurrentMaxCalories`, {
+			const response = await fetch(`${config.API_URL}/getCurrentMaxCalories`, {
 				method: 'GET'
 			});
 			

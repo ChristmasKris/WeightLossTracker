@@ -2,7 +2,7 @@
 
 import { listener } from './utils.js';
 import { api } from './api.js';
-import { actions } from './state.js';
+import { stateManager } from './stateManager.js';
 
 export const renderLoginScreen = async (appDiv) => {
 	const response = await fetch('login.html');
@@ -13,32 +13,32 @@ export const renderLoginScreen = async (appDiv) => {
 
 const setupLoginEvents = () => {
 	const loginBtn = document.getElementById('loginBtn');
-	const passwordInput = document.getElementById('passwordInput');
+	const keyInput = document.getElementById('passwordInput');
 	
 	const handleLogin = async () => {
-		const password = passwordInput.value;
+		const key = keyInput.value;
 		
-		if (!password) {
-			alert('Please enter a password');
+		if (!key) {
+			alert('Please enter a key');
 			return;
 		}
 		
-		const isValid = await api.authenticate(password);
+		const isValid = await api.authenticate(key);
 		
 		if (isValid) {
-			actions.login(password);
+			stateManager.action.login(key);
 		} else {
-			alert('Invalid password');
-			passwordInput.value = '';
+			alert('Invalid key');
+			keyInput.value = '';
 		}
 	};
 	
 	const handleKeyPress = (e) => {
-		if (e.key === 'Enter' && passwordInput.value) {
+		if (e.key === 'Enter' && keyInput.value) {
 			handleLogin();
 		}
 	};
 	
 	listener.add(loginBtn, 'click', handleLogin);
-	listener.add(passwordInput, 'keypress', handleKeyPress);
+	listener.add(keyInput, 'keypress', handleKeyPress);
 };
