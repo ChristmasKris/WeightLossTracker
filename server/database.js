@@ -13,7 +13,7 @@ const readDB = () => {
 		const data = fs.readFileSync(dbPath, 'utf-8');
 		return JSON.parse(data);
 	} catch (error) {
-		return { entries: [], weights: [] };
+		return { calories: [], weights: [], maxCalories: [] };
 	}
 };
 
@@ -23,12 +23,12 @@ const writeDB = (db) => {
 
 export const getEntries = () => {
 	const db = readDB();
-	return db.entries || [];
+	return db.calories || [];
 };
 
 export const addEntry = (name, calories) => {
 	const db = readDB();
-	const entriesArray = db.entries || [];
+	const entriesArray = db.calories || [];
 	
 	const maxId = entriesArray.length > 0 
 		? Math.max(...entriesArray.map(e => e.id || 0))
@@ -42,31 +42,31 @@ export const addEntry = (name, calories) => {
 	};
 	
 	entriesArray.push(newEntry);
-	db.entries = entriesArray;
+	db.calories = entriesArray;
 	writeDB(db);
 	return newEntry;
 };
 
 export const getTodayEntries = () => {
 	const entries = getEntries();
-	const today = new Date().toISOString().split('T')[0];
+	const today = new Date();
 	
 	return entries.filter(entry => {
-		const entryDate = entry.timestamp.split('T')[0];
-		return entryDate === today;
+		const entryDate = new Date(entry.timestamp);
+		return entryDate.toDateString() === today.toDateString();
 	});
 };
 
 export const deleteEntry = (entryId) => {
 	const db = readDB();
-	const entriesArray = db.entries || [];
+	const entriesArray = db.calories || [];
 	const filteredEntries = entriesArray.filter(entry => entry.id !== entryId);
 	
 	if (filteredEntries.length === entriesArray.length) {
 		return false;
 	}
 	
-	db.entries = filteredEntries;
+	db.calories = filteredEntries;
 	writeDB(db);
 	return true;
 };
@@ -75,11 +75,11 @@ export const deleteEntry = (entryId) => {
 export const getTodayWeight = () => {
 	const db = readDB();
 	const weights = db.weights || [];
-	const today = new Date().toISOString().split('T')[0];
+	const today = new Date();
 	
 	return weights.find(weight => {
-		const weightDate = weight.timestamp.split('T')[0];
-		return weightDate === today;
+		const weightDate = new Date(weight.timestamp);
+		return weightDate.toDateString() === today.toDateString();
 	}) || null;
 };
 

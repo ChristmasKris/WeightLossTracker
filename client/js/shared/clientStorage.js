@@ -56,12 +56,7 @@ export const clientStorage = {
 			localStorage.setItem(name, JSON.stringify(value));
 			return true;
 		} catch (error) {
-			console.error(`Error storing clientStorage item "${name}":`, error);
-			
-			if (error.name === 'QuotaExceededError') {
-				console.warn('clientStorage quota exceeded. Consider clearing some data.');
-			}
-			
+			console.error(`Error setting clientStorage item "${name}":`, error);
 			return false;
 		}
 	},
@@ -82,25 +77,6 @@ export const clientStorage = {
 			return true;
 		} catch (error) {
 			console.error(`Error removing clientStorage item "${name}":`, error);
-			return false;
-		}
-	},
-	
-	/**
-	* Clears all data from clientStorage.
-	* @returns {boolean} True if clientStorage was successfully cleared, false otherwise.
-	*/
-	clear() {
-		if (!this.isAvailable()) {
-			console.warn('clientStorage is not available');
-			return false;
-		}
-		
-		try {
-			localStorage.clear();
-			return true;
-		} catch (error) {
-			console.error('Error clearing clientStorage:', error);
 			return false;
 		}
 	}
