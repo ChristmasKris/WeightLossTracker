@@ -1,15 +1,23 @@
+'use strict';
+
 import { apiHandler } from '../../core/apiHandler.js';
 import { stateManager } from '../../core/stateManager.js';
 
 export const caloriesApi = {
-	async addEntry(food, calories, date = new Date().toISOString().split('T')[0]) {
+	async addEntry(food, calories) {
 		try {
+			const date = new Date().toISOString().split('T')[0];
 			const state = stateManager.get();
 			const response = await apiHandler.request('/entry', {
 				method: 'POST',
-				body: { name: food, calories, date },
+				body: {
+					name: food,
+					calories,
+					date
+				},
 				key: state.auth.key
 			});
+			
 			return response;
 		} catch (error) {
 			throw new Error(`Failed to add entry: ${error.message}`);
@@ -21,9 +29,12 @@ export const caloriesApi = {
 			const state = stateManager.get();
 			const response = await apiHandler.request('/deleteEntry', {
 				method: 'POST',
-				body: { entryId: id },
+				body: {
+					entryId: id
+				},
 				key: state.auth.key
 			});
+			
 			return response;
 		} catch (error) {
 			throw new Error(`Failed to delete entry: ${error.message}`);
@@ -35,6 +46,7 @@ export const caloriesApi = {
 			const response = await apiHandler.request('/getTodayEntries', {
 				method: 'GET'
 			});
+			
 			return response;
 		} catch (error) {
 			throw new Error(`Failed to fetch today's entries: ${error.message}`);
@@ -46,6 +58,7 @@ export const caloriesApi = {
 			const response = await apiHandler.request('/getCurrentMaxCalories', {
 				method: 'GET'
 			});
+			
 			return response;
 		} catch (error) {
 			throw new Error(`Failed to fetch max calories: ${error.message}`);

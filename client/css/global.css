@@ -7,6 +7,7 @@
 	--padding: 15px;
 	--red: #ae271d;
 	--redDark: #831d16;
+	--shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -39,6 +40,22 @@ button {
 	font-weight: 600;
 	border-radius: 5px;
 	background-color: #444444;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	
+	span {
+		color: var(--fontColor);
+		font-size: 18px;
+		font-weight: 600;
+	}
+	
+	svg {
+		font-size: 17px;
+		color: var(--fontColor);
+		margin-right: 8px;
+		padding-bottom: 2px;
+	}
 	
 	&:active {
 		background-color: #333333;
@@ -96,155 +113,6 @@ html {
 				align-items: center;
 				flex-direction: column;
 				padding-bottom: 250px;
-				
-				.container {
-					background-color: #2a2a2a;
-					padding: var(--padding);
-					box-sizing: border-box;
-					border-radius: 5px;
-					width: 100%;
-				}
-				
-				.entries {
-					background-color: #2a2a2a;
-					padding: var(--padding) var(--padding) 0 var(--padding);
-					box-sizing: border-box;
-					border-radius: 5px;
-					width: 100%;
-					margin-top: var(--padding);
-					
-					.todayCalories {
-						font-size: 18px;
-						color: var(--darkFontColor);
-						font-weight: 500;
-						text-align: center;
-						display: block;
-						padding-bottom: var(--padding);
-					}
-					
-					.progress {
-						width: 100%;
-						height: 10px;
-						background-color: #333333;
-						margin-bottom: var(--padding);
-						border-radius: 3px;
-						overflow: hidden;
-						
-						.bar {
-							width: 0%;
-							height: 100%;
-							background-color: var(--red);
-						}
-					}
-					
-					.entriesHolder {
-						width: 100%;
-						
-						.noEntries {
-							width: 100%;
-							padding: var(--padding) 0 30px 0;
-							box-sizing: border-box;
-							display: flex;
-							align-items: center;
-							justify-content: center;
-							
-							span {
-								font-size: 18px;
-								color: var(--darkFontColor);
-								font-weight: 500;
-							}
-						}
-						
-						.entry {
-							width: 100%;
-							background-color: #333333;
-							border-radius: 5px;
-							padding: var(--padding);
-							box-sizing: border-box;
-							display: flex;
-							align-items: flex-start;
-							justify-content: center;
-							flex-direction: column;
-							margin-bottom: var(--padding);
-							
-							.name {
-								font-size: 18px;
-								color: var(--fontColor);
-								font-weight: 500;
-							}
-							
-							.calories {
-								font-size: 15px;
-								color: var(--darkFontColor);
-								font-weight: 500;
-								padding: 3px 0 var(--padding) 0;
-							}
-						}
-					}
-				}
-				
-				.weights {
-					background-color: #2a2a2a;
-					padding: var(--padding) var(--padding) 0 var(--padding);
-					box-sizing: border-box;
-					border-radius: 5px;
-					width: 100%;
-					margin-top: var(--padding);
-					
-					.weightsHolder {
-						width: 100%;
-						
-						.noWeights {
-							width: 100%;
-							padding: var(--padding) 0 30px 0;
-							box-sizing: border-box;
-							display: flex;
-							align-items: center;
-							justify-content: center;
-							
-							span {
-								font-size: 18px;
-								color: var(--darkFontColor);
-								font-weight: 500;
-							}
-						}
-						
-						.weight-entry {
-							width: 100%;
-							background-color: #333333;
-							border-radius: 5px;
-							padding: var(--padding);
-							box-sizing: border-box;
-							display: flex;
-							align-items: center;
-							justify-content: space-between;
-							margin-bottom: var(--padding);
-							
-							.weight-info {
-								display: flex;
-								flex-direction: column;
-								gap: 3px;
-								
-								.weight-value {
-									font-size: 18px;
-									color: var(--fontColor);
-									font-weight: 500;
-								}
-								
-								.weight-date {
-									font-size: 15px;
-									color: var(--darkFontColor);
-									font-weight: 500;
-								}
-							}
-							
-							.deleteButton {
-								width: auto;
-								padding: 10px 20px;
-							}
-						}
-					}
-				}
 			}
 		}
 	}

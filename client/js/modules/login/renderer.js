@@ -1,8 +1,10 @@
+'use strict';
+
 import { loginTemplates } from './templates.js';
 
 export const loginRenderer = {
 	renderLoginForm() {
-		const mainContent = document.getElementById('main-content');
+		const mainContent = document.querySelector('main');
 		if (!mainContent) {
 			return;
 		}

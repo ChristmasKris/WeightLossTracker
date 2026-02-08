@@ -1,10 +1,15 @@
+'use strict';
+
 export const weightsTemplates = {
 	container(weights) {
 		return `
 			<div class="container">
-				<h1>Weight</h1>
+				<h1>Weights</h1>
 				<input type="number" id="weightInput" placeholder="Weight (kg)" step="0.01" min="0" required/>
-				<button id="addWeightBtn" class="btn">Add entry</button>
+				<button class="addWeightButton" class="btn">
+					<i class="fa-solid fa-plus"></i>
+					<span>Add entry</span>
+				</button>
 			</div>
 			<div class="weights">
 				<h1>All entries</h1>
@@ -30,7 +35,10 @@ export const weightsTemplates = {
 					<span class="weight-value">${weight.weight} kg</span>
 					<span class="weight-date">${formattedDate}</span>
 				</div>
-				<button class="deleteButton" data-weight-id="${weight.id}">Delete</button>
+				<button class="deleteButton" data-weight-id="${weight.id}">
+					<i class="fa-solid fa-trash-can"></i>
+					<span>Delete</span>
+				</button>
 			</div>
 		`;
 	}

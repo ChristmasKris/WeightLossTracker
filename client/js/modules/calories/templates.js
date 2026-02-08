@@ -7,11 +7,14 @@ export const caloriesTemplates = {
 				<h1>Calories</h1>
 				<input type="text" id="foodName" placeholder="Consumable name" required/>
 				<input type="number" id="calorieAmount" placeholder="Calories" step="1" min="0" required/>
-				<button id="addEntryBtn">Add entry</button>
+				<button class="addEntryButton">
+					<i class="fa-solid fa-plus"></i>
+					<span>Add entry</span>
+				</button>
 			</div>
 			<div class="entries">
 				<h1>Today's entries</h1>
-				<span class="todayCalories">${totalCalories} / ${maxCalories} kcal</span>
+				<span class="todayCalories">Consumed ${totalCalories} / ${maxCalories} kcal</span>
 				<div class="progress">
 					<div class="bar" style="width: ${Math.min((totalCalories / maxCalories) * 100, 100)}%"></div>
 				</div>
@@ -30,7 +33,10 @@ export const caloriesTemplates = {
 			<div class="entry">
 				<span class="name">${entry.food}</span>
 				<span class="calories">${entry.calories} kcal</span>
-				<button class="deleteButton" data-entry-id="${entry.id}">Delete</button>
+				<button class="deleteButton" data-entry-id="${entry.id}">
+					<i class="fa-solid fa-trash-can"></i>
+					<span>Delete</span>
+				</button>
 			</div>
 		`;
 	}

@@ -1,0 +1,80 @@
+main {
+	.container {
+		background-color: #2a2a2a;
+		padding: var(--padding);
+		box-sizing: border-box;
+		border-radius: 5px;
+		width: 100%;
+		
+		button {
+			svg {
+				font-size: 19px;
+				padding-bottom: 0;
+			}
+		}
+	}
+	
+	.weights {
+		background-color: #2a2a2a;
+		padding: var(--padding) var(--padding) 0 var(--padding);
+		box-sizing: border-box;
+		border-radius: 5px;
+		width: 100%;
+		margin-top: var(--padding);
+		
+		.weightsHolder {
+			width: 100%;
+			
+			.noWeights {
+				width: 100%;
+				padding: var(--padding) 0 30px 0;
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				
+				span {
+					font-size: 18px;
+					color: var(--darkFontColor);
+					font-weight: 500;
+				}
+			}
+			
+			.weight-entry {
+				width: 100%;
+				background-color: #333333;
+				border-radius: 5px;
+				padding: var(--padding);
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-bottom: var(--padding);
+				box-shadow: var(--shadow);
+				
+				.weight-info {
+					display: flex;
+					flex-direction: column;
+					gap: 3px;
+					
+					.weight-value {
+						font-size: 18px;
+						color: var(--fontColor);
+						font-weight: 500;
+					}
+					
+					.weight-date {
+						font-size: 15px;
+						color: var(--darkFontColor);
+						font-weight: 500;
+					}
+				}
+				
+				.deleteButton {
+					width: auto;
+					padding: 10px 20px;
+				}
+			}
+		}
+	}
+}

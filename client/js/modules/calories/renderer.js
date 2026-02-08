@@ -6,11 +6,6 @@ import { caloriesTemplates } from './templates.js';
 export const caloriesRenderer = {
 	render() {
 		const mainContent = document.querySelector('main');
-		
-		if (!mainContent) {
-			return;
-		}
-		
 		const state = stateManager.get();
 		const entries = state.calorieEntries || [];
 		const maxCalories = state.maxCalories || 2000;
